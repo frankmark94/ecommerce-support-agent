@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Customer Support</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary-color: #4a154b;
+            --secondary-color: #3f0e40;
+            --light-bg: #f8f9fa;
+            --dark-text: #333;
+            --light-text: #f8f9fa;
+            --user-message-color: #0d6efd;
+            --agent-message-color: #e9ecef;
+            --border-radius: 12px;
+            --timeline-color: #e8e8e8;
+            --timeline-dot-color: #4a154b;
+            --timeline-icon-color: #fff;
+            --cta-color: #4a154b;
+            --cta-hover-color: #3f0e40;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar {
+            background-color: var(--primary-color) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            color: var(--light-text) !important;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .navbar-brand i {
+            font-size: 1.4rem;
+        }
+        
+        .main-container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+            height: calc(100vh - 76px);
+        }
+        
+        .timeline-container {
+            width: 260px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 100%;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--timeline-color);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-icon {
+            position: absolute;
+            left: -30px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: var(--timeline-dot-color);
+            color: var(--timeline-icon-color);
+            font-size: 0.7rem;
+            z-index: 2;
+        }
+        
+        .timeline-content {
+            background: var(--light-bg);
+            border-radius: var(--border-radius);
+            padding: 12px;
+            font-size: 0.85rem;
+        }
+        
+        .timeline-title {
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-time {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+        
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            margin: 0 auto;
+            max-height: 100%;
+        }
+        
+        .chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-header h5 {
+            margin-bottom: 5px;
+        }
+        
+        .chat-box {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: var(--light-bg);
+        }
+        
+        .chat-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #e9ecef;
+            background-color: #f8f9fa;
+        }
+        
+        .user-message {
+            background-color: var(--user-message-color);
+            color: white;
+            border-radius: var(--border-radius);
+            padding: 12px 18px;
+            margin-bottom: 15px;
+            max-width: 80%;
+            margin-left: auto;
+            word-wrap: break-word;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .agent-message {
+            background-color: var(--agent-message-color);
+            border-radius: var(--border-radius);
+            padding: 12px 18px;
+            margin-bottom: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .typing-indicator {
+            background-color: var(--agent-message-color);
+            border-radius: var(--border-radius);
+            padding: 12px 18px;
+            margin-bottom: 15px;
+            max-width: 100px;
+            display: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #666;
+            border-radius: 50%;
+            animation: typing 1s infinite;
+            margin-right: 5px;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .system-message {
+            text-align: center;
+            color: #6c757d;
+            margin: 15px 0;
+            font-style: italic;
+        }
+        
+        .suggestion-btn {
+            margin-right: 5px;
+            margin-bottom: 8px;
+            border-radius: 18px;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            background-color: white;
+            border: 2px solid var(--cta-color);
+            transition: all 0.2s ease;
+            color: var(--cta-color);
+            font-weight: 600;
+        }
+        
+        .suggestion-btn:hover {
+            background-color: var(--cta-color);
+            color: white;
+            border-color: var(--cta-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .settings-container {
+            margin-top: 10px;
+        }
+        
+        .message-timestamp {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: right;
+            margin-top: 3px;
+        }
+        
+        .agent-timestamp {
+            color: #6c757d;
+        }
+        
+        .input-container {
+            background-color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            border: 2px solid var(--cta-color);
+        }
+        
+        .input-group {
+            margin-bottom: 0;
+        }
+        
+        .form-control {
+            border-radius: 25px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: 1px solid #ced4da;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(74, 21, 75, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: var(--cta-color);
+            border-color: var(--cta-color);
+            border-radius: 25px;
+            padding: 10px 24px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: var(--cta-hover-color);
+            border-color: var(--cta-hover-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-clear {
+            background-color: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 18px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-clear:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: white;
+        }
+        
+        .pulsing-input {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(74, 21, 75, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(74, 21, 75, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(74, 21, 75, 0);
+            }
+        }
+        
+        .accordion-button:not(.collapsed) {
+            background-color: #f1f1f1;
+            color: var(--dark-text);
+        }
+        
+        .accordion-button:focus {
+            box-shadow: none;
+        }
+        
+        .start-prompt {
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--cta-color);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .main-container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .timeline-container {
+                width: 100%;
+                max-height: 300px;
+                margin-bottom: 15px;
+            }
+            
+            .chat-container {
+                height: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1"><i class="bi bi-headset"></i> E-Commerce Customer Support</span>
+            <button class="btn btn-clear" id="clearChatButtonTop"><i class="bi bi-trash"></i> Clear Chat</button>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <!-- Timeline Container -->
+        <div class="timeline-container">
+            <h5 class="mb-3">Agent Actions</h5>
+            <div class="timeline" id="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-icon">
+                        <i class="bi bi-robot"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">Session Started</div>
+                        <div>Agent initialized and ready to assist</div>
+                        <div class="timeline-time" id="session-time"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <div>
+                    <h5>Customer Support Chat</h5>
+                    <div class="text-muted small">Ask about your orders, returns, or other questions</div>
+                </div>
+            </div>
+            
+            <div class="chat-box" id="chatBox">
+                <div class="system-message">Connected to support agent. How can we help you today?</div>
+            </div>
+            
+            <div class="chat-footer">
+                <div class="start-prompt">
+                    <i class="bi bi-arrow-down-circle"></i> Select a quick option below or type your question to get started
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex flex-wrap justify-content-center" id="suggestionButtons">
+                        <button class="btn suggestion-btn" onclick="setQuestion('Where is my order ORD123456?')">
+                            <i class="bi bi-box-seam"></i> Track Order ORD123456
+                        </button>
+                        <button class="btn suggestion-btn" onclick="setQuestion('I want to return my headphones from order ORD789012')">
+                            <i class="bi bi-arrow-return-left"></i> Return Order ORD789012
+                        </button>
+                        <button class="btn suggestion-btn" onclick="setQuestion('What\'s your return policy?')">
+                            <i class="bi bi-info-circle"></i> Return Policy
+                        </button>
+                        <button class="btn suggestion-btn" onclick="setQuestion('How long does shipping take?')">
+                            <i class="bi bi-truck"></i> Shipping Time
+                        </button>
+                    </div>
+                </div>
+
+                <div class="input-container pulsing-input">
+                    <div class="input-group">
+                        <input type="text" id="userInput" class="form-control" placeholder="Type your message here...">
+                        <button class="btn btn-primary" type="button" id="sendButton">
+                            <i class="bi bi-send-fill"></i> Send
+                        </button>
+                    </div>
+                </div>
+
+                <div class="accordion settings-container" id="settingsAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                Advanced Settings
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" 
+                             data-bs-parent="#settingsAccordion">
+                            <div class="accordion-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" value="" id="persistThread" checked>
+                                    <label class="form-check-label" for="persistThread">
+                                        Remember conversation context
+                                    </label>
+                                </div>
+                                
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text">User ID</span>
+                                    <input type="text" id="userId" class="form-control" placeholder="Optional user ID for personalization">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentThreadId = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatBox = document.getElementById('chatBox');
+            const userInput = document.getElementById('userInput');
+            const sendButton = document.getElementById('sendButton');
+            const persistThread = document.getElementById('persistThread');
+            const userId = document.getElementById('userId');
+            const clearChatButton = document.getElementById('clearChatButtonTop');
+            const timeline = document.getElementById('timeline');
+            const sessionTime = document.getElementById('session-time');
+            const inputContainer = document.querySelector('.input-container');
+            
+            // Initialize session time
+            const now = new Date();
+            sessionTime.textContent = formatTime(now);
+            
+            // Stop pulsing after first interaction
+            userInput.addEventListener('focus', function() {
+                inputContainer.classList.remove('pulsing-input');
+            });
+            
+            // Function to format time
+            function formatTime(date) {
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+            
+            // Function to add timeline events
+            function addTimelineEvent(title, description, icon = 'gear') {
+                const now = new Date();
+                const timeString = formatTime(now);
+                
+                const timelineItem = document.createElement('div');
+                timelineItem.className = 'timeline-item';
+                
+                timelineItem.innerHTML = `
+                    <div class="timeline-icon">
+                        <i class="bi bi-${icon}"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">${title}</div>
+                        <div>${description}</div>
+                        <div class="timeline-time">${timeString}</div>
+                    </div>
+                `;
+                
+                timeline.appendChild(timelineItem);
+                
+                // Scroll timeline to bottom
+                timeline.scrollTop = timeline.scrollHeight;
+            }
+            
+            // Function to add messages to the chat
+            function addMessage(message, isUser) {
+                // Hide the start prompt after first message
+                document.querySelector('.start-prompt').style.display = 'none';
+                
+                const now = new Date();
+                const timeString = formatTime(now);
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = isUser ? 'user-message' : 'agent-message';
+                
+                const messageContent = document.createElement('div');
+                messageContent.textContent = message;
+                messageDiv.appendChild(messageContent);
+                
+                const timestamp = document.createElement('div');
+                timestamp.className = isUser ? 'message-timestamp' : 'message-timestamp agent-timestamp';
+                timestamp.textContent = timeString;
+                messageDiv.appendChild(timestamp);
+                
+                chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+            
+            // Show typing indicator
+            function showTypingIndicator() {
+                const indicator = document.createElement('div');
+                indicator.className = 'typing-indicator';
+                indicator.id = 'typingIndicator';
+                indicator.innerHTML = '<span></span><span></span><span></span>';
+                chatBox.appendChild(indicator);
+                indicator.style.display = 'block';
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+            
+            // Hide typing indicator
+            function hideTypingIndicator() {
+                const indicator = document.getElementById('typingIndicator');
+                if (indicator) {
+                    indicator.remove();
+                }
+            }
+            
+            // Send message to the API
+            async function sendMessage(message) {
+                if (!message.trim()) return;
+                
+                // Remove pulsing effect after first message
+                inputContainer.classList.remove('pulsing-input');
+                
+                addMessage(message, true);
+                showTypingIndicator();
+                
+                const payload = {
+                    message: message
+                };
+                
+                // Add thread ID if we're persisting the conversation
+                if (persistThread.checked && currentThreadId) {
+                    payload.thread_id = currentThreadId;
+                }
+                
+                // Add user ID if provided
+                if (userId.value.trim()) {
+                    payload.user_id = userId.value.trim();
+                }
+                
+                try {
+                    addTimelineEvent('Message Sent', 'User message sent to agent', 'chat');
+                    
+                    const response = await fetch('/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    const data = await response.json();
+                    hideTypingIndicator();
+                    
+                    if (response.ok) {
+                        addMessage(data.response, false);
+                        
+                        // Check if this is a new thread
+                        if (!currentThreadId && data.thread_id) {
+                            addTimelineEvent('Thread Created', 'Conversation thread initialized', 'arrow-repeat');
+                        }
+                        
+                        currentThreadId = data.thread_id;
+                        
+                        // Look for tool usage patterns in the response
+                        if (data.response.includes('order status') || data.response.includes('tracking number')) {
+                            addTimelineEvent('Order Status Check', 'Agent retrieved order information', 'box-seam');
+                        }
+                        
+                        if (data.response.includes('return') && data.response.includes('initiated')) {
+                            addTimelineEvent('Return Initiated', 'Agent processed a return request', 'arrow-return-left');
+                        }
+                        
+                        if (data.response.includes('policy') || data.response.includes('FAQ')) {
+                            addTimelineEvent('FAQ Lookup', 'Agent consulted knowledge base', 'info-circle');
+                        }
+                    } else {
+                        addMessage('Error: ' + (data.detail || 'Could not get a response'), false);
+                        addTimelineEvent('Error', 'Failed to get agent response', 'exclamation-triangle');
+                    }
+                } catch (error) {
+                    hideTypingIndicator();
+                    addMessage('Error: Could not connect to the server', false);
+                    addTimelineEvent('Connection Error', 'Failed to connect to server', 'wifi-off');
+                    console.error(error);
+                }
+            }
+            
+            // Handle send button click
+            sendButton.addEventListener('click', function() {
+                const message = userInput.value;
+                sendMessage(message);
+                userInput.value = '';
+            });
+            
+            // Handle Enter key press
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const message = userInput.value;
+                    sendMessage(message);
+                    userInput.value = '';
+                }
+            });
+            
+            // Handle clear chat button
+            clearChatButton.addEventListener('click', function() {
+                chatBox.innerHTML = '<div class="system-message">Chat cleared. How can we help you today?</div>';
+                currentThreadId = null;
+                
+                // Show start prompt again
+                document.querySelector('.start-prompt').style.display = 'block';
+                
+                // Add pulsing effect back
+                inputContainer.classList.add('pulsing-input');
+                
+                // Also clear and reset timeline
+                timeline.innerHTML = `
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            <i class="bi bi-robot"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Session Started</div>
+                            <div>Agent initialized and ready to assist</div>
+                            <div class="timeline-time">${formatTime(new Date())}</div>
+                        </div>
+                    </div>
+                `;
+                
+                addTimelineEvent('Chat Cleared', 'Conversation history cleared', 'trash');
+            });
+            
+            // Make the suggestion buttons more interactive
+            const suggestionBtns = document.querySelectorAll('.suggestion-btn');
+            suggestionBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    inputContainer.classList.remove('pulsing-input');
+                });
+            });
+        });
+        
+        // Function to set a question from the suggestion buttons
+        function setQuestion(question) {
+            document.getElementById('userInput').value = question;
+            // Optional: auto-send the message
+            document.getElementById('sendButton').click();
+        }
+    </script>
+</body>
+</html> 
