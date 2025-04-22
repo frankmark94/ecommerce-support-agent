@@ -2,6 +2,9 @@
 
 An agentic system built with OpenAI Agents SDK that simulates a customer support assistant for an e-commerce website.
 
+<img width="953" alt="image" src="https://github.com/user-attachments/assets/d3067f38-e71c-425b-8a73-3f6aa8513295" />
+
+
 ## Features
 
 - Natural language interactions with customers
